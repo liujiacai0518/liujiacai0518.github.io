@@ -9,10 +9,12 @@
   <div>33333333</div>
   <div id="message"></div>
   <script>
+    const newPage = window.open('','_self'); 
     document.querySelector("#message").addEventListener('click', function() {
-      console.log(99999)
+      console.log(888)
       try {
-        window.open(`EvniaPrecisionCenterApp://`, '_blank')
+        // window.open(`EvniaPrecisionCenterApp://`, '_self')
+         newPage.location.href = 'EvniaPrecisionCenterApp://'
       } catch (error) {
         console.log(error) 
       }
