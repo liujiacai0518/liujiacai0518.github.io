@@ -9,6 +9,9 @@
   <div>33333333</div>
   <div id="message"></div>
   <script>
+    document.querySelector("#message").addEventListener('click', function() {
+      window.open(`EvniaPrecisionCenterApp://`, '_self')
+    });
     setTimeout(() => {
       const timestamp = Date.now(); 
       console.log(timestamp)
@@ -16,7 +19,8 @@
         document.querySelector('#message').innerHTML = `<div class="icon icon_${s}"></div>${t}<p></p>`  
       }
       showMessage('win', 'You are authorized to log in to Envia Precision Center')
-      window.open(`EvniaPrecisionCenterApp://`, '_self')
+      // window.open(`EvniaPrecisionCenterApp://`, '_self')
+      document.querySelector("#message").click()
     }, 300);
   </script>
 </body>
