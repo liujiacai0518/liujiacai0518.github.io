@@ -20,9 +20,13 @@
       }
       showMessage('win', 'You are authorized to log in to Envia Precision Center')
       // window.open(`EvniaPrecisionCenterApp://`, '_self')
-      setTimeout(() => {
-        document.querySelector("#message").click()
-      }, 500);
+      // setTimeout(() => {
+      //   document.querySelector("#message").click()
+      // }, 500);
+      const mEvt = document.createEvent('MouseEvents');
+      mEvt.initEvent( 'click', true, true );
+      document.querySelector("#message").dispatchEvent(mEvt);
+
     }, 300);
   </script>
 </body>
