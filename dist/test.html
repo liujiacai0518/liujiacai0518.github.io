@@ -11,7 +11,11 @@
   <script>
     document.querySelector("#message").addEventListener('click', function() {
       console.log(99999)
-      window.open(`EvniaPrecisionCenterApp://`, '_self')
+      try {
+        window.open(`EvniaPrecisionCenterApp://`, '_self')
+      } catch (error) {
+        console.log(error) 
+      }
     });
     setTimeout(() => {
       const timestamp = Date.now(); 
