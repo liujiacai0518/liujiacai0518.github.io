@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>33333333</div>
+  <div id="message"></div>
+  <script>
+    setTimeout(() => {
+      const timestamp = Date.now(); 
+      console.log(timestamp)
+      function showMessage(s, t){
+        document.querySelector('#message').innerHTML = `<div class="icon icon_${s}"></div>${t}<p></p>`  
+      }
+      showMessage('win', 'You are authorized to log in to Envia Precision Center')
+      window.open(`EvniaPrecisionCenterApp://`, '_self')
+    }, 300);
+  </script>
+</body>
+</html>
