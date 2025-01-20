@@ -15,12 +15,18 @@
       // 确认消息来源
       console.log(8888, event)
     });
+
+
+
     function tt() {
       console.log(222122, window)
       parent.postMessage({
         whale_ad_event: "PlayFinished"
       }, '*');
     }
+    document.addEventListener('keydown',function(){
+      console.log('子页面')
+    })
   </script>
 </body>
 
