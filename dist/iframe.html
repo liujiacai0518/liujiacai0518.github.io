@@ -8,13 +8,18 @@
 </head>
 
 <body>
-  <div>iframe 测试</div>
+  <div @click="tt()">iframe 测试</div>
   <script>
     // 监听来自父页面的消息
     window.addEventListener('message', function (event) {
       // 确认消息来源
       event.source.postMessage('Hello, parent!', event)
     });
+    function tt() {
+      parent.postMessage({
+        whale_ad_event: "PlayFinished"
+      }, '*');
+    }
   </script>
 </body>
 
