@@ -16,6 +16,7 @@
       event.source.postMessage('Hello, parent!', event)
     });
     function tt() {
+      console.log(222122, window)
       parent.postMessage({
         whale_ad_event: "PlayFinished"
       }, '*');
