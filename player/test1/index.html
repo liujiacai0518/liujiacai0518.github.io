@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./tvFocusable.umd.js"></script>
+  <script src="./ozyPlayerSDK.umd.js"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .main {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .layoutLeft {
+      width: 80vw;
+      background-color: bisque;
+    }
+
+    .layoutRight {
+      background-color: #ccc;
+      flex: 1;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .layoutRight .button {
+      width: 100%;
+      height: 5vh;
+      line-height: 5vh;
+      background-color: chartreuse;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 10px;
+
+      &.play-button {
+        background-color: #1a73e8;
+      }
+
+      &.pause-button {
+        background-color: rgb(143, 137, 137);
+      }
+
+      &.resume-button {
+        background-color: rgb(14, 232, 148);
+      }
+
+      &.stop-button {
+        background-color: rgb(228, 28, 28);
+      }
+    }
+
+    .layoutRight .button.focus-test{
+      background-color: #fff !important;
+      color: #000000;
+    }
+
+    .layoutRight .button:hover {
+      opacity: 0.7;
+    }
+
+    #content {
+      width: 800px;
+      height: 600px;
+      background-color: black;
+    }
+
+    #avod-set {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <div class="layoutLeft">
+      <div id="content">1111</div>
+    </div>
+    <div class="layoutRight">
+      <div id="onFocus" class="button" onclick="load()" focusable-test>加载</div>
+      <div class="button play-button" onclick="play()" focusable-test>播放</div>
+      <div class="button pause-button" onclick="pause()" focusable-test>暂停</div>
+      <div class="button resume-button" onclick="resume()" focusable-test>继续播放</div>
+      <div class="button stop-button" onclick="stop()" focusable-test>结束播放</div>
+      <div class="button" onclick="fullscreen()" focusable-test>全屏</div>
+      <div class="button" onclick="normal()" focusable-test>恢复正常大小</div>
+      <div class="button" onclick="setAvodId()" focusable-test>设置avod id</div>
+      <input id="avod-set" type="text">
+      <div class="button" onclick="destroy()" focusable-test>销毁player</div>
+    </div>
+  </div>
+  <script>
+    const element1 = document.querySelector("#content")
+    const player = ozyPlayerSDK.init({
+      element: element1,
+      media: 'https://storage.googleapis.com/gvabox/media/samples/stock.mp4?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]',
+      mediaTitle: '视频标题',
+      cpId: 'zeasn',
+      zoneId: 'SMARTTV_PORTAL_VIDEOPIP'
+    })
+
+    const load = () => player.load()
+    const play = () => player.start()
+    const pause = () => player.pause()
+    const resume = () => player.resume()
+    const stop = () => player.stop()
+    const fullscreen = () => player.setPlayerFullscreen()
+    const normal = () => player.setPlayerNormal()
+    const setAvodId = () => player.setAvodId(document.getElementById("avod-set").value)
+    const destroy = () => player.destroy()
+
+    player.on(ozyPlayerSDK.EventType.PLAY_STARTED, () => console.warn('页面接收到视频播放事件'))
+    player.on(ozyPlayerSDK.EventType.AD_INSERTED, () => console.warn('页面接收到广告插入事件'))
+    player.on(ozyPlayerSDK.EventType.AD_COMPLETED, () => console.warn('页面接收到广告结束事件'))
+    player.on(ozyPlayerSDK.EventType.PLAY_RESUMED, () => console.warn('页面接收到视频重新播放事件'))
+    player.on(ozyPlayerSDK.EventType.PLAY_PAUSED, () => console.warn('页面接收到视频暂停事件'))
+    player.on(ozyPlayerSDK.EventType.PLAY_FINISHED, () => console.warn('页面接收到视频结束事件'))
+    player.load()
+
+    //焦点事件
+    const { tvFocusable } = tvFocusableSDK
+    tvFocusable.setFocusClassName('focus-test')
+    tvFocusable.setFocusedAttrname('focused-test')
+    tvFocusable.setFocusItemAttrname('focusable-test')
+    tvFocusable.onFocus(document.querySelector('#onFocus'))
+
+    document.addEventListener('keydown', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('业务层按键事件', e.keyCode)
+      e.key === 'Backspace' && normal()
+      tvFocusable.onKeyDown(e)
+    })
+
+    document.addEventListener('keyup', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      tvFocusable.onKeyUp(e)
+    })
+  </script>
+</body>
+
+</html>
