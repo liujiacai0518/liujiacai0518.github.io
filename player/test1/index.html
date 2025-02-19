@@ -32,6 +32,14 @@
       box-sizing: border-box;
     }
 
+    .layoutRight .tab {
+      display: flex;
+    }
+
+    .layoutRight .tab .button:nth-child(1) {
+      border-right: 2px solid #ccc;
+    }
+
     .layoutRight .button {
       width: 100%;
       height: 5vh;
@@ -41,11 +49,11 @@
       cursor: pointer;
       margin-top: 10px;
 
-      &.play-button {
+      /* &.play-button {
         background-color: #1a73e8;
-      }
+      } */
 
-      &.pause-button {
+      /* &.pause-button {
         background-color: rgb(143, 137, 137);
       }
 
@@ -55,12 +63,16 @@
 
       &.stop-button {
         background-color: rgb(228, 28, 28);
-      }
+      } */
     }
 
-    .layoutRight .button.focus-test{
-      background-color: #fff !important;
-      color: #000000;
+    .layoutRight .button.disabled {
+      background-color: #f0f0f0;
+    }
+
+    .layoutRight .button.focus-test {
+      background-color: blue !important;
+      color: #fff;
     }
 
     .layoutRight .button:hover {
@@ -68,14 +80,27 @@
     }
 
     #content {
-      width: 800px;
-      height: 600px;
+      width: 40vw;
+      height: 30vw;
       background-color: black;
+      margin: 20px auto;
     }
 
     #avod-set {
       width: 100%;
       box-sizing: border-box;
+    }
+
+    .logOutputWrap {
+      width: 76vw;
+      height: 20vw;
+      background-color: #fff;
+      margin: 0 auto;
+      box-sizing: border-box;
+      padding: 10px;
+      overflow-y: auto;
+      line-height: 34px;
+      font-size: 20px;
     }
   </style>
 </head>
@@ -83,33 +108,82 @@
 <body>
   <div class="main">
     <div class="layoutLeft">
-      <div id="content">1111</div>
+      <div id="content"></div>
+      <div class="logOutputWrap" id="logOutputWrap">
+        <div id="logOutput"></div>
+      </div>
     </div>
     <div class="layoutRight">
-      <div id="onFocus" class="button" onclick="load()" focusable-test>加载</div>
-      <div class="button play-button" onclick="play()" focusable-test>播放</div>
-      <div class="button pause-button" onclick="pause()" focusable-test>暂停</div>
-      <div class="button resume-button" onclick="resume()" focusable-test>继续播放</div>
-      <div class="button stop-button" onclick="stop()" focusable-test>结束播放</div>
-      <div class="button" onclick="fullscreen()" focusable-test>全屏</div>
-      <div class="button" onclick="normal()" focusable-test>恢复正常大小</div>
-      <div class="button" onclick="setAvodId()" focusable-test>设置avod id</div>
-      <input id="avod-set" type="text">
-      <div class="button" onclick="destroy()" focusable-test>销毁player</div>
+      <div class="tab">
+        <div class="button play-button focus-test" onclick="loadmp4()" focusable-test focused-test>Load MP4</div>
+        <div class="button" onclick="loadm3u8()" focusable-test>Load m3u8</div>
+      </div>
+      <div class="button" onclick="play()" focusable-test>Start playing</div>
+      <div class="button pause-button" onclick="pause()" focusable-test>Pause</div>
+      <div class="button resume-button" onclick="resume()" focusable-test>Resume</div>
+      <div class="button stop-button" onclick="stop()" focusable-test>End play</div>
+      <div class="button" onclick="destroy()" focusable-test>Destroy</div>
+      <div class="button" onclick="fullscreen()" focusable-test>Fullscreen</div>
+      <div class="button disabled">The Back button cancels the full screen</div>
+      <!-- <div class="button" onclick="setAvodId()" focusable-test>设置avod id</div>
+      <input id="avod-set" type="text"> -->
     </div>
   </div>
   <script>
+    function logToPage(message) {
+      var logOutput = document.getElementById('logOutput');
+      var logOutputWrap = document.getElementById('logOutputWrap');
+      logOutput.innerText += message + '\n'; // 添加换行符以便于阅读
+      var tn = logOutputWrap.scrollHeight - logOutputWrap.clientHeight
+      logOutputWrap.scrollTop = tn
+    }
+
     const element1 = document.querySelector("#content")
     const player = ozyPlayerSDK.init({
       element: element1,
       media: 'https://storage.googleapis.com/gvabox/media/samples/stock.mp4?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]',
-      mediaTitle: '视频标题',
+      mediaTitle: 'Test video',
       cpId: 'zeasn',
       zoneId: 'SMARTTV_PORTAL_VIDEOPIP'
     })
 
-    const load = () => player.load()
-    const play = () => player.start()
+    const loadmp4 = () => {
+      const media = 'https://storage.googleapis.com/gvabox/media/samples/stock.mp4?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]'
+      const mediaTitle = 'Test video mp4'
+      const cpId = 'zeasn'
+      const zoneId = 'SMARTTV_PORTAL_VIDEOPIP'
+      player.load({
+        media,
+        mediaTitle,
+        cpId,
+        zoneId
+      })
+      logToPage(`mp4 loaded successfully`)
+      logToPage(`media:${media}`)
+      logToPage(`mediaTitle:${mediaTitle}`)
+      logToPage(`cpId:${cpId}`)
+      logToPage(`zoneId:${zoneId}`)
+    }
+    const loadm3u8 = () => {
+      const media = 'https://d364wn47rt6xao.cloudfront.net/v1/master/5bb30b269f83d6c44f720981f63d8cdf6d94b837/acc-whalelive-spotx/10/196/VIDEO/MP4/EN/es-tvgam-ballOMatic/196_es-tvgam-ballOMatic_video_30_ball_o_matic-video.m3u8?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]'
+      const mediaTitle = 'Test video m3u8'
+      const cpId = 'm3u8'
+      const zoneId = ''
+      player.load({
+        media,
+        mediaTitle,
+        cpId,
+        zoneId
+      })
+      logToPage(`m3u8 loaded successfully`)
+      logToPage(`media:${media}`)
+      logToPage(`mediaTitle:${mediaTitle}`)
+      logToPage(`cpId:${cpId}`)
+      logToPage(`zoneId:${zoneId}`)
+    }
+    const play = () => {
+      player.start()
+    }
     const pause = () => player.pause()
     const resume = () => player.resume()
     const stop = () => player.stop()
@@ -118,13 +192,12 @@
     const setAvodId = () => player.setAvodId(document.getElementById("avod-set").value)
     const destroy = () => player.destroy()
 
-    player.on(ozyPlayerSDK.EventType.PLAY_STARTED, () => console.warn('页面接收到视频播放事件'))
-    player.on(ozyPlayerSDK.EventType.AD_INSERTED, () => console.warn('页面接收到广告插入事件'))
-    player.on(ozyPlayerSDK.EventType.AD_COMPLETED, () => console.warn('页面接收到广告结束事件'))
-    player.on(ozyPlayerSDK.EventType.PLAY_RESUMED, () => console.warn('页面接收到视频重新播放事件'))
-    player.on(ozyPlayerSDK.EventType.PLAY_PAUSED, () => console.warn('页面接收到视频暂停事件'))
-    player.on(ozyPlayerSDK.EventType.PLAY_FINISHED, () => console.warn('页面接收到视频结束事件'))
-    player.load()
+    player.on(ozyPlayerSDK.EventType.PLAY_STARTED, () => logToPage('The page received a video play event'))
+    player.on(ozyPlayerSDK.EventType.AD_INSERTED, () => logToPage('The page received an AD insertion event'))
+    player.on(ozyPlayerSDK.EventType.AD_COMPLETED, () => logToPage('The page received an end-of-ad event'))
+    player.on(ozyPlayerSDK.EventType.PLAY_RESUMED, () => logToPage('The page received a video replay event'))
+    player.on(ozyPlayerSDK.EventType.PLAY_PAUSED, () => logToPage('The page received a video pause event'))
+    player.on(ozyPlayerSDK.EventType.PLAY_FINISHED, () => logToPage('The page received the end of video event'))
 
     //焦点事件
     const { tvFocusable } = tvFocusableSDK
