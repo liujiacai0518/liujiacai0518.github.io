@@ -20,11 +20,6 @@
       height: 100vh;
     }
 
-    .layoutLeft {
-      width: 80vw;
-      background-color: bisque;
-    }
-
     .layoutRight {
       background-color: #ccc;
       flex: 1;
@@ -74,16 +69,29 @@
       background-color: blue !important;
       color: #fff;
     }
+    .layoutRight input{
+      height: 5vh;
+      margin-top: 10px;
+      width: 100%;
+    }
 
     .layoutRight .button:hover {
       opacity: 0.7;
     }
 
+    .layoutLeft {
+      width: 80vw;
+      background-color: bisque;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
     #content {
-      width: 40vw;
-      height: 30vw;
+      width: 50vw;
+      height: 34vw;
       background-color: black;
-      margin: 20px auto;
+      margin-right: 20px;
     }
 
     #avod-set {
@@ -92,15 +100,25 @@
     }
 
     .logOutputWrap {
-      width: 76vw;
-      height: 20vw;
+      flex: 1;
+      height: 100%;
       background-color: #fff;
-      margin: 0 auto;
       box-sizing: border-box;
-      padding: 10px;
-      overflow-y: auto;
+      padding: 20px;
       line-height: 34px;
       font-size: 20px;
+      overflow-x: hidden;
+      word-wrap: break-word;
+    }
+
+    .logOutputWrap span {
+      width: 100%;
+      background-color: red;
+      display: inline-block;
+      margin-bottom: 2px;
+      word-wrap: break-word;
+      white-space: normal;
+      hyphens: auto;
     }
   </style>
 </head>
@@ -114,10 +132,14 @@
       </div>
     </div>
     <div class="layoutRight">
-      <div class="tab">
+      <!-- <div class="tab">
         <div class="button play-button focus-test" onclick="loadmp4()" focusable-test focused-test>Load MP4</div>
         <div class="button" onclick="loadm3u8()" focusable-test>Load m3u8</div>
-      </div>
+      </div> -->
+      <input class="input" id="input_mp4" type="text" value="https://storage.googleapis.com/gvabox/media/samples/stock.mp4">
+      <div class="button play-button focus-test" onclick="loadmp4()" focusable-test focused-test>Load MP4</div>
+      <input class="input" id="input_m3u8" type="text" value="https://d364wn47rt6xao.cloudfront.net/v1/master/5bb30b269f83d6c44f720981f63d8cdf6d94b837/acc-whalelive-spotx/10/196/VIDEO/MP4/EN/es-tvgam-ballOMatic/196_es-tvgam-ballOMatic_video_30_ball_o_matic-video.m3u8">
+      <div class="button" onclick="loadm3u8()" focusable-test>Load m3u8</div>
       <div class="button" onclick="play()" focusable-test>Start playing</div>
       <div class="button pause-button" onclick="pause()" focusable-test>Pause</div>
       <div class="button resume-button" onclick="resume()" focusable-test>Resume</div>
@@ -130,10 +152,13 @@
     </div>
   </div>
   <script>
-    function logToPage(message) {
+    function logToPage(message, clear = false) {
       var logOutput = document.getElementById('logOutput');
       var logOutputWrap = document.getElementById('logOutputWrap');
-      logOutput.innerText += message + '\n'; // 添加换行符以便于阅读
+      if (clear) {
+        logOutput.innerHTML = ''
+      }
+      logOutput.innerHTML += '<span>' + message + '</span>'; // 添加换行符以便于阅读
       var tn = logOutputWrap.scrollHeight - logOutputWrap.clientHeight
       logOutputWrap.scrollTop = tn
     }
@@ -148,7 +173,7 @@
     })
 
     const loadmp4 = () => {
-      const media = 'https://storage.googleapis.com/gvabox/media/samples/stock.mp4?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]'
+      const media = document.getElementById("input_mp4").value+'?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]'
       const mediaTitle = 'Test video mp4'
       const cpId = 'zeasn'
       const zoneId = 'SMARTTV_PORTAL_VIDEOPIP'
@@ -158,14 +183,14 @@
         cpId,
         zoneId
       })
-      logToPage(`mp4 loaded successfully`)
+      logToPage(`mp4 loaded successfully`, true)
       logToPage(`media:${media}`)
       logToPage(`mediaTitle:${mediaTitle}`)
       logToPage(`cpId:${cpId}`)
       logToPage(`zoneId:${zoneId}`)
     }
     const loadm3u8 = () => {
-      const media = 'https://d364wn47rt6xao.cloudfront.net/v1/master/5bb30b269f83d6c44f720981f63d8cdf6d94b837/acc-whalelive-spotx/10/196/VIDEO/MP4/EN/es-tvgam-ballOMatic/196_es-tvgam-ballOMatic_video_30_ball_o_matic-video.m3u8?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]'
+      const media = document.getElementById("input_m3u8").value+'?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]'
       const mediaTitle = 'Test video m3u8'
       const cpId = 'm3u8'
       const zoneId = ''
@@ -175,7 +200,7 @@
         cpId,
         zoneId
       })
-      logToPage(`m3u8 loaded successfully`)
+      logToPage(`m3u8 loaded successfully`, true)
       logToPage(`media:${media}`)
       logToPage(`mediaTitle:${mediaTitle}`)
       logToPage(`cpId:${cpId}`)
