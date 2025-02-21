@@ -136,7 +136,7 @@
         <div class="button play-button focus-test" onclick="loadmp4()" focusable-test focused-test>Load MP4</div>
         <div class="button" onclick="loadm3u8()" focusable-test>Load m3u8</div>
       </div> -->
-      <input class="input" id="input_mp4" type="text" value="https://vjs.zencdn.net/v/oceans.mp4">
+      <input class="input" id="input_mp4" type="text" value="https://storage.googleapis.com/gvabox/media/samples/stock.mp4">
       <div class="button play-button focus-test" onclick="loadmp4()" focusable-test focused-test>Load MP4</div>
       <input class="input" id="input_m3u8" type="text" value="https://d364wn47rt6xao.cloudfront.net/v1/master/5bb30b269f83d6c44f720981f63d8cdf6d94b837/acc-whalelive-spotx/10/196/VIDEO/MP4/EN/es-tvgam-ballOMatic/196_es-tvgam-ballOMatic_video_30_ball_o_matic-video.m3u8">
       <div class="button" onclick="loadm3u8()" focusable-test>Load m3u8</div>
@@ -176,7 +176,7 @@
       const media = document.getElementById("input_mp4").value+'?rnd=[rnd]&player_height=[player_height]&cntry=[cntry]'
       const mediaTitle = 'Test video mp4'
       const cpId = 'zeasn'
-      const zoneId = ''
+      const zoneId = 'SMARTTV_PORTAL_VIDEOPIP'
       player.load({
         media,
         mediaTitle,
