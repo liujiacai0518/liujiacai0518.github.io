@@ -6,7 +6,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(['/index.html', '/player.js']))
+      .then((cache) => cache.addAll(['/test/cache.html', '/test/player.js']))
   );
 });
 

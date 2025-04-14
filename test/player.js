@@ -30,7 +30,7 @@ class MultiVideoPlayer {
   registerServiceWorker() {
     if ('serviceWorker' in navigator) {
       try {
-        navigator.serviceWorker.register('/sw.js').then(() => {
+        navigator.serviceWorker.register('/test/sw.js').then(() => {
           console.log('Service Worker注册成功');
         });
       } catch (error) {
