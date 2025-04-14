@@ -1,5 +1,6 @@
 const CACHE_NAME = 'video-cache-v1';
 const MAX_CACHE_SIZE = 200 * 1024 * 1024; // 200MB缓存限制
+
 // 安装时缓存关键资源
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -11,19 +12,20 @@ self.addEventListener('install', (event) => {
 
 // 缓存视频请求
 self.addEventListener('fetch', (event) => {
+  console.log(88888)
   const url = new URL(event.request.url);
-  console.log(8666, url);
   // 只处理视频请求
   if (!url.pathname.endsWith('.mp4')) {
     return;
   }
+
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return new Promise((resolve) => {
         // 首先尝试从缓存获取
         cache.match(event.request).then((cachedResponse) => {
           if (cachedResponse) {
-            resolve(cachedResponse);
+            resolve(cachedResponse)
           }
 
           // 否则从网络获取并缓存
@@ -39,7 +41,7 @@ self.addEventListener('fetch', (event) => {
                 }
 
                 return response;
-                resolve(response);
+                resolve(response)
               });
             });
           } catch (error) {
@@ -68,7 +70,7 @@ self.addEventListener('activate', (event) => {
 });
 
 // 计算缓存大小
-function getCacheSize(cache) {
+async function getCacheSize(cache) {
   return new Promise((resolve) => {
     cache.keys().then((requests) => {
       let totalSize = 0;

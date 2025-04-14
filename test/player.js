@@ -30,6 +30,13 @@ class MultiVideoPlayer {
   registerServiceWorker() {
     if ('serviceWorker' in navigator) {
       try {
+        // navigator.serviceWorker.getRegistrations().then((registrations) => {
+        //   console.log(888, registrations)
+        //   for (let registration of registrations) {
+        //     registration.unregister(); // 注销所有 SW
+        //     console.log('已卸载:', registration.scope);
+        //   }
+        // });
         navigator.serviceWorker.register('/test/sw.js').then(() => {
           console.log('Service Worker注册成功');
         });
@@ -51,6 +58,7 @@ class MultiVideoPlayer {
     this.videoElement.addEventListener('playing', () => this.hideLoading());
 
     // 预加载后续视频段
+    console.log(111);
     this.prefetchNextSegments();
   }
 
@@ -80,14 +88,16 @@ class MultiVideoPlayer {
       try {
         caches.open('video-cache').then((cache) => {
           cache.match(videoUrl).then((response) => {
+            console.log(1111, videoUrl, response);
             if (response) {
               response.blob().then((blob) => {
                 resolve(URL.createObjectURL(blob));
               });
+            } else {
+              resolve(null);
             }
           });
         });
-        resolve(null);
       } catch (error) {
         console.error('缓存访问失败:', error);
         resolve(null);
@@ -114,7 +124,7 @@ class MultiVideoPlayer {
       nextIndex,
       nextIndex + 2
     );
-
+    console.log(2222);
     for (const segment of segmentsToPrefetch) {
       if (!segment.preload || this.prefetchedSegments.has(segment.url))
         continue;
@@ -122,6 +132,7 @@ class MultiVideoPlayer {
       try {
         // 使用fetch API获取并缓存
         fetch(segment.url).then((response) => {
+          console.log(8888, response.ok);
           if (response.ok) {
             if ('caches' in window) {
               caches.open('video-cache').then((cache) => {
