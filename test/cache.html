@@ -8,24 +8,24 @@
 </head>
 
 <body>
-  <video id="videoPlayer" controls style="width: 100%;height: 100%; display: none;"></video>
-  <img id="pic" style="width: 100%;height: 100%;" alt="">
+  <video id="videoPlayer" controls style="width: 100%;height: 100%;"></video>
+  <!-- <img id="pic" style="width: 100%;height: 100%; display: none;" alt=""> -->
   <script>
-    const url = 'https://assets.springserve.com/video_creatives/000/534/305/1241179_1280x720-4482558.mp4'
-    console.log(99922)
+    const url = 'https://assets.springserve.com/video_creatives/000/606/368/15s-naturesacpe-5001500.mp4'
+    console.log(99933)
     const videoPlayer = document.querySelector('#videoPlayer')
-    // fetch(url, { mode: 'cors' })
-    //   .then(response => response.blob())
-    //   .then(blob => {
-    //     // const blobUrl = URL.createObjectURL(blob);
-    //     // videoPlayer.src = blobUrl;
-    //     const source = document.createElement('source');
-    //     source.src = URL.createObjectURL(blob);
-    //     source.type = 'video/mp4'; // 明确指定类型
-    //     videoPlayer.appendChild(source);
-    //     videoPlayer.load();
-    //   })
-    //   .catch(error => console.error('下载失败:', error));
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const blobUrl = URL.createObjectURL(blob);
+        videoPlayer.src = blobUrl;
+        // const source = document.createElement('source');
+        // source.src = URL.createObjectURL(blob);
+        // source.type = 'video/mp4'; // 明确指定类型
+        // videoPlayer.appendChild(source);
+        // videoPlayer.load();
+      })
+      .catch(error => console.error('下载失败:', error));
     // fetch(url, { mode: 'cors' }).then((response) => {
     //   console.log(222451, response.ok);
     //   const clonedResponse = response.clone();
@@ -63,17 +63,17 @@
       // 4 (MEDIA_ERR_SRC_NOT_SUPPORTED) 格式不支持
     });
 
-    const imgurl = 'https://cdn.prod.website-files.com/6666d37a275951ae96644f4b/66c46126fb5cbcdb3a67473b_whaletv_logo_pink_RGB.svg'
-    console.log(99922)
-    const imgPlayer = document.querySelector('#pic')
-    fetch(imgurl, { mode: 'cors' })
-      .then(response => response.blob())
-      .then(blob => {
-        // const blobUrl = URL.createObjectURL(blob);
-        // videoPlayer.src = blobUrl;
-        imgPlayer.src = URL.createObjectURL(blob);
-      })
-      .catch(error => console.error('下载失败:', error));
+    // const imgurl = 'https://cdn.prod.website-files.com/6666d37a275951ae96644f4b/66c46126fb5cbcdb3a67473b_whaletv_logo_pink_RGB.svg'
+    // console.log(99922)
+    // const imgPlayer = document.querySelector('#pic')
+    // fetch(imgurl, { mode: 'cors' })
+    //   .then(response => response.blob())
+    //   .then(blob => {
+    //     // const blobUrl = URL.createObjectURL(blob);
+    //     // videoPlayer.src = blobUrl;
+    //     imgPlayer.src = URL.createObjectURL(blob);
+    //   })
+    //   .catch(error => console.error('下载失败:', error));
   </script>
 </body>
 
