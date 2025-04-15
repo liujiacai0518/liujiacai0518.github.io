@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     // 注册Service Worker
     navigator.serviceWorker
-      .register('/test/kk.js')
+      .register('/test/kk.js?v=1')
       .then((registration) => {
         console.log('ServiceWorker 注册成功:', registration.scope);
         updateStatus('Service Worker已注册');
