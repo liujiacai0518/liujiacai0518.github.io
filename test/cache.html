@@ -11,13 +11,18 @@
   <video id="videoPlayer" controls style="width: 100%;height: 100%;"></video>
   <script>
     const url = 'https://assets.springserve.com/video_creatives/000/534/305/1241179_1280x720-4482558.mp4'
-    console.log(999111)
+    console.log(99922)
     const videoPlayer = document.querySelector('#videoPlayer')
     fetch(url, { mode: 'cors' })
       .then(response => response.blob())
       .then(blob => {
-        const blobUrl = URL.createObjectURL(blob);
-        videoPlayer.src = blobUrl;
+        // const blobUrl = URL.createObjectURL(blob);
+        // videoPlayer.src = blobUrl;
+        const source = document.createElement('source');
+        source.src = URL.createObjectURL(blob);
+        source.type = 'video/mp4'; // 明确指定类型
+        videoPlayer.appendChild(source);
+        videoPlayer.load();
       })
       .catch(error => console.error('下载失败:', error));
     // fetch(url, { mode: 'cors' }).then((response) => {
