@@ -6,71 +6,67 @@ function IDBCache(dbName, storeName) {
   this.version = 1; 
 }
 
-// 打开/初始化数据库
-// IDBCache.prototype.open = function () {
-//   var self = this;
-//   return new Promise(function (resolve, reject) {
-//     var request = indexedDB.open(self.dbName, 1);
-
-//     request.onupgradeneeded = function (event) {
-//       var db = event.target.result;
-//       if (!db.objectStoreNames.contains(self.storeName)) {
-//         db.createObjectStore(self.storeName, { keyPath: 'url' });
-//       }
-//     };
-
-//     request.onsuccess = function (event) {
-//       self.db = event.target.result;
-//       resolve(self.db);
-//     };
-
-//     request.onerror = function (event) {
-//       reject('IndexedDB打开失败: ' + event.target.error);
-//     };
-//   });
-// };
 
 // 打开/初始化数据库
 IDBCache.prototype.open = function () {
   var self = this;
   return new Promise(function (resolve, reject) {
+    // 检查是否支持IndexedDB
+    if (!window.indexedDB) {
+      return reject('IndexedDB is not supported in this browser');
+    }
+
     var request = indexedDB.open(self.dbName, self.version);
 
     request.onupgradeneeded = function (event) {
       var db = event.target.result;
       var transaction = event.target.transaction;
       
-      // Handle transaction errors
-      transaction.onerror = function(e) {
-        console.error('Upgrade transaction error:', e.target.error);
+      // 更完善的错误处理
+      transaction.onabort = function(e) {
+        console.error('Upgrade transaction aborted:', e.target.error);
+        reject('Database upgrade aborted: ' + e.target.error.message);
       };
       
-      // Only create the store if it doesn't exist
+      transaction.onerror = function(e) {
+        console.error('Upgrade transaction error:', e.target.error);
+        reject('Database upgrade error: ' + e.target.error.message);
+      };
+      
+      transaction.oncomplete = function() {
+        console.log('Upgrade transaction completed');
+      };
+      
+      // 只在不存在的时创建存储
       if (!db.objectStoreNames.contains(self.storeName)) {
         try {
-          db.createObjectStore(self.storeName, { keyPath: 'url' });
+          var store = db.createObjectStore(self.storeName, { keyPath: 'url' });
+          console.log('Object store created successfully');
         } catch (e) {
           console.error('Failed to create object store:', e);
-          // Explicitly abort the transaction
-          transaction.abort();
+          // 不需要显式调用abort()，错误会自动中止事务
           reject('Failed to create object store: ' + e.message);
+          return;
         }
       }
     };
 
     request.onsuccess = function (event) {
       self.db = event.target.result;
-      // Update the version in case it was changed elsewhere
+      // 更新版本号以保持同步
       self.version = self.db.version;
+      console.log('Database opened successfully, version:', self.version);
       resolve(self.db);
     };
 
     request.onerror = function (event) {
-      reject('IndexedDB opening error: ' + event.target.error);
+      console.error('Database opening error:', event.target.error);
+      reject('IndexedDB opening error: ' + event.target.error.message);
     };
 
     request.onblocked = function(event) {
-      reject('Database is blocked (probably open in another tab)');
+      console.warn('Database is blocked (probably open in another tab)');
+      reject('Database is blocked. Please close other tabs using this database.');
     };
   });
 };
