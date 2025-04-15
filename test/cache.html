@@ -11,6 +11,19 @@
   <video id="videoPlayer" controls style="width: 100%;height: 100%;"></video>
   <!-- <img id="pic" style="width: 100%;height: 100%; display: none;" alt=""> -->
   <script>
+    function testBlobSupport(sizeInBytes) {
+      try {
+        const blob = new Blob([new Uint8Array(sizeInBytes)]);
+        const url = URL.createObjectURL(blob);
+        URL.revokeObjectURL(url);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    const canSupport100MB = testBlobSupport(100 * 1024 * 1024);
+    console.log('是否支持100MB Blob?', canSupport100MB);
     const url = 'https://assets.springserve.com/video_creatives/000/606/368/15s-naturesacpe-5001500.mp4'
     console.log(99933)
     const videoPlayer = document.querySelector('#videoPlayer')
