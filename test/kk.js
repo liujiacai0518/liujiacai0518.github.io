@@ -28,6 +28,8 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  console.log(6666, url)
   // 只处理视频请求
   if (event.request.url.includes('.mp4')) {
     event.respondWith(
