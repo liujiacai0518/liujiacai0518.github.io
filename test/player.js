@@ -3,28 +3,74 @@ function IDBCache(dbName, storeName) {
   this.dbName = dbName || 'http-cache';
   this.storeName = storeName || 'responses';
   this.db = null;
+  this.version = 1; 
 }
+
+// 打开/初始化数据库
+// IDBCache.prototype.open = function () {
+//   var self = this;
+//   return new Promise(function (resolve, reject) {
+//     var request = indexedDB.open(self.dbName, 1);
+
+//     request.onupgradeneeded = function (event) {
+//       var db = event.target.result;
+//       if (!db.objectStoreNames.contains(self.storeName)) {
+//         db.createObjectStore(self.storeName, { keyPath: 'url' });
+//       }
+//     };
+
+//     request.onsuccess = function (event) {
+//       self.db = event.target.result;
+//       resolve(self.db);
+//     };
+
+//     request.onerror = function (event) {
+//       reject('IndexedDB打开失败: ' + event.target.error);
+//     };
+//   });
+// };
 
 // 打开/初始化数据库
 IDBCache.prototype.open = function () {
   var self = this;
   return new Promise(function (resolve, reject) {
-    var request = indexedDB.open(self.dbName, 1);
+    var request = indexedDB.open(self.dbName, self.version);
 
     request.onupgradeneeded = function (event) {
       var db = event.target.result;
+      var transaction = event.target.transaction;
+      
+      // Handle transaction errors
+      transaction.onerror = function(e) {
+        console.error('Upgrade transaction error:', e.target.error);
+      };
+      
+      // Only create the store if it doesn't exist
       if (!db.objectStoreNames.contains(self.storeName)) {
-        db.createObjectStore(self.storeName, { keyPath: 'url' });
+        try {
+          db.createObjectStore(self.storeName, { keyPath: 'url' });
+        } catch (e) {
+          console.error('Failed to create object store:', e);
+          // Explicitly abort the transaction
+          transaction.abort();
+          reject('Failed to create object store: ' + e.message);
+        }
       }
     };
 
     request.onsuccess = function (event) {
       self.db = event.target.result;
+      // Update the version in case it was changed elsewhere
+      self.version = self.db.version;
       resolve(self.db);
     };
 
     request.onerror = function (event) {
-      reject('IndexedDB打开失败: ' + event.target.error);
+      reject('IndexedDB opening error: ' + event.target.error);
+    };
+
+    request.onblocked = function(event) {
+      reject('Database is blocked (probably open in another tab)');
     };
   });
 };
