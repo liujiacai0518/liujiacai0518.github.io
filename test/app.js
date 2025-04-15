@@ -1,12 +1,12 @@
 const videoSegments = [
   {
     id: 'part1',
-    url: 'https://assets.springserve.com/video_creatives/000/606/368/15s-naturesacpe-5001500.mp4',
+    url: 'https://liujiacai0518.github.io/test/movie.mp4',
     preload: true,
   },
   {
     id: 'part2',
-    url: 'https://assets.springserve.com/video_creatives/000/534/305/1241179_1280x720-4482558.mp4',
+    url: 'https://assets.springserve.com/video_creatives/000/606/368/15s-naturesacpe-5001500.mp4',
     preload: true,
   },
 ];

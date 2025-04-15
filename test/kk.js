@@ -40,13 +40,15 @@ self.addEventListener('fetch', (event) => {
         // 否则从网络获取
         return fetch(event.request.url).then((response) => {
           // 缓存新获取的视频
-          console.log(222, response);
           if (!response.ok) return response;
           const responseToCache = response.clone();
           console.log(1111, responseToCache);
-          caches
-            .open(CACHE_NAME)
-            .then((cache) => cache.put(event.request.url, responseToCache));
+          caches.open(CACHE_NAME).then((cache) => {
+            console.log(444);
+            cache.put(event.request.url, responseToCache).then(() => {
+              console.log('成功');
+            });
+          });
           return response;
         });
       })
