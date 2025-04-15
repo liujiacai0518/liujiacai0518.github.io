@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cc</title>
+</head>
+
+<body>
+  <video id="videoPlayer" controls style="width: 100%;height: 100%;"></video>
+  <!-- <img id="pic" style="width: 100%;height: 100%; display: none;" alt=""> -->
+  <script>
+    // function testBlobSupport(sizeInBytes) {
+    //   try {
+    //     const blob = new Blob([new Uint8Array(sizeInBytes)]);
+    //     const url = URL.createObjectURL(blob);
+    //     URL.revokeObjectURL(url);
+    //     return true;
+    //   } catch (e) {
+    //     return false;
+    //   }
+    // }
+
+    // const canSupport100MB = testBlobSupport(100 * 1024 * 1024);
+    // console.log('是否支持100MB Blob?', canSupport100MB);
+    // const url = 'https://assets.springserve.com/video_creatives/000/606/368/15s-naturesacpe-5001500.mp4'
+    const url = 'https://liujiacai0518.github.io/test/movie.mp4'
+  
+    console.log(999343)
+    const videoPlayer = document.querySelector('#videoPlayer')
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const blobUrl = URL.createObjectURL(blob);
+        videoPlayer.src = blobUrl;
+        // const source = document.createElement('source');
+        // source.src = URL.createObjectURL(blob);
+        // source.type = 'video/mp4'; // 明确指定类型
+        // videoPlayer.appendChild(source);
+        // videoPlayer.load();
+      })
+      .catch(error => console.error('下载失败:', error));
+    // fetch(url, { mode: 'cors' }).then((response) => {
+    //   console.log(222451, response.ok);
+    //   const clonedResponse = response.clone();
+    //   if (response.ok) {
+    //     if ('caches' in window) {
+    //       caches.open('video-cache').then((cache) => {
+    //         console.log(999, clonedResponse, cache.put);
+    //         cache.put(url, clonedResponse).then(() => {
+    //           console.log('成功')
+    //           cache.match(url).then((response) => {
+    //             console.log(1111, response);
+    //             if (response) {
+    //               response.blob().then((blob) => {
+    //                 console.log(7777, URL.createObjectURL(blob))
+    //                 let dm = document.querySelector('#videoPlayer')
+    //                 dm.src = URL.createObjectURL(blob)
+    //               });
+    //             } else {
+    //               console.log(8888)
+    //             }
+    //           });
+    //         }).catch((error) => {
+    //           console.error('PUT 失败:', error);
+    //         });
+    //       });
+    //     }
+    //   }
+    // });
+    videoPlayer.addEventListener('error', function () {
+      console.error('播放错误:', videoPlayer.error.code);
+      // 常见错误码：
+      // 1 (MEDIA_ERR_ABORTED) 用户取消
+      // 2 (MEDIA_ERR_NETWORK) 网络错误
+      // 3 (MEDIA_ERR_DECODE) 解码失败（编码不支持）
+      // 4 (MEDIA_ERR_SRC_NOT_SUPPORTED) 格式不支持
+    });
+
+    // const imgurl = 'https://cdn.prod.website-files.com/6666d37a275951ae96644f4b/66c46126fb5cbcdb3a67473b_whaletv_logo_pink_RGB.svg'
+    // console.log(99922)
+    // const imgPlayer = document.querySelector('#pic')
+    // fetch(imgurl, { mode: 'cors' })
+    //   .then(response => response.blob())
+    //   .then(blob => {
+    //     // const blobUrl = URL.createObjectURL(blob);
+    //     // videoPlayer.src = blobUrl;
+    //     imgPlayer.src = URL.createObjectURL(blob);
+    //   })
+    //   .catch(error => console.error('下载失败:', error));
+  </script>
+</body>
+
+</html>
