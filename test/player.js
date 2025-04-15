@@ -24,7 +24,7 @@ class MultiVideoPlayer {
     this.prefetchedSegments = new Map();
 
     this.initPlayer();
-    this.registerServiceWorker();
+    // this.registerServiceWorker();
   }
 
   registerServiceWorker() {
@@ -131,14 +131,24 @@ class MultiVideoPlayer {
 
       try {
         // 使用fetch API获取并缓存
-        fetch(segment.url).then((response) => {
-          console.log(8888, response.ok);
+        fetch(segment.url, { mode: 'cors' }).then((response) => {
+          console.log(22245, response.ok);
+          const clonedResponse = response.clone();
           if (response.ok) {
             if ('caches' in window) {
               caches.open('video-cache').then((cache) => {
-                cache.put(segment.url, response.clone()).then(() => {
-                  this.prefetchedSegments.set(segment.url, true);
+                console.log(999, clonedResponse, cache.put);
+                cache.delete(segment.url).then(() => {
+                  cache.put(segment.url, clonedResponse).catch((error) => {
+                    console.error('PUT 失败:', error);
+                  });
                 });
+                // cache.put(segment.url, clonedResponse).catch(error => {
+                //   console.error("PUT 失败:", error);
+                // });
+                // cache.put(segment.url, response.clone()).then(() => {
+                //   this.prefetchedSegments.set(segment.url, true);
+                // });
               });
             }
           }

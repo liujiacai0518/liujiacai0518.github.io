@@ -37,8 +37,6 @@ self.addEventListener('fetch', (event) => {
                 if (currentSize + contentLength <= MAX_CACHE_SIZE) {
                   cache.put(event.request, response.clone());
                 }
-
-                return response;
                 resolve(response);
               });
             });
@@ -54,6 +52,7 @@ self.addEventListener('fetch', (event) => {
 
 // 清理旧缓存
 self.addEventListener('activate', (event) => {
+  console.log(1778811)
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(

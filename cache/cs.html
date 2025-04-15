@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cc</title>
+</head>
+
+<body>
+  <video id="videoPlayer" controls style="width: 100%;height: 100%;"></video>
+  <script>
+    const url = 'https://assets.springserve.com/video_creatives/000/534/305/1241179_1280x720-4482558.mp4'
+    console.log(999)
+    fetch(url, { mode: 'cors' }).then((response) => {
+      console.log(222451, response.ok);
+      const clonedResponse = response.clone();
+      if (response.ok) {
+        if ('caches' in window) {
+          caches.open('video-cache').then((cache) => {
+            console.log(999, clonedResponse, cache.put);
+            cache.put(url, clonedResponse).then(() => {
+              console.log('成功')
+              cache.match(url).then((response) => {
+                console.log(1111, response);
+                if (response) {
+                  response.blob().then((blob) => {
+                    console.log(7777, URL.createObjectURL(blob))
+                    let dm = document.querySelector('#videoPlayer')
+                    dm.src = URL.createObjectURL(blob)
+                  });
+                } else {
+                  console.log(8888)
+                }
+              });
+            }).catch((error) => {
+              console.error('PUT 失败:', error);
+            });
+          });
+        }
+      }
+    });
+
+  </script>
+</body>
+
+</html>
