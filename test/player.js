@@ -1,4 +1,3 @@
-
 function isBlobUrlSupported() {
   try {
     const blob = new Blob(['test'], { type: 'text/plain' });
@@ -13,8 +12,8 @@ function isBlobUrlSupported() {
 if (!isBlobUrlSupported()) {
   console.error('TV browser does not support blob URLs');
   // 使用备用方案
-}else{
-  console.log('支持')
+} else {
+  console.log('支持');
 }
 const vData = {};
 class MultiVideoPlayer {
@@ -124,7 +123,7 @@ class MultiVideoPlayer {
       if (vData[videoUrl]) {
         vData[videoUrl].blob().then((blob) => {
           const blobUrl = URL.createObjectURL(blob);
-          console.log(7799, blobUrl);
+          console.log(7799, blob);
           resolve(blobUrl);
         });
       } else {
@@ -178,6 +177,7 @@ class MultiVideoPlayer {
             //   console.error('缓存失败:', err);
             // });
             vData[segment.url] = clonedResponse;
+            console.log(2673, vData)
             // if ('caches' in window) {
             //   caches.open('video-cache').then((cache) => {
             //     cache.put(segment.url, clonedResponse).catch((error) => {
