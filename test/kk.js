@@ -33,6 +33,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.match(event.request.url).then((cachedResponse) => {
         // 如果缓存中有，返回缓存
+        console.log(3344, cachedResponse)
         if (cachedResponse) {
           console.log(9999);
           return cachedResponse;
