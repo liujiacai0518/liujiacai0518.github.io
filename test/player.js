@@ -3,9 +3,8 @@ function IDBCache(dbName, storeName) {
   this.dbName = dbName || 'http-cache';
   this.storeName = storeName || 'responses';
   this.db = null;
-  this.version = 1; 
+  this.version = 1;
 }
-
 
 // 打开/初始化数据库
 IDBCache.prototype.open = function () {
@@ -21,22 +20,22 @@ IDBCache.prototype.open = function () {
     request.onupgradeneeded = function (event) {
       var db = event.target.result;
       var transaction = event.target.transaction;
-      
+
       // 更完善的错误处理
-      transaction.onabort = function(e) {
+      transaction.onabort = function (e) {
         console.error('Upgrade transaction aborted:', e.target.error);
         reject('Database upgrade aborted: ' + e.target.error.message);
       };
-      
-      transaction.onerror = function(e) {
+
+      transaction.onerror = function (e) {
         console.error('Upgrade transaction error:', e.target.error);
         reject('Database upgrade error: ' + e.target.error.message);
       };
-      
-      transaction.oncomplete = function() {
+
+      transaction.oncomplete = function () {
         console.log('Upgrade transaction completed');
       };
-      
+
       // 只在不存在的时创建存储
       if (!db.objectStoreNames.contains(self.storeName)) {
         try {
@@ -64,25 +63,29 @@ IDBCache.prototype.open = function () {
       reject('IndexedDB opening error: ' + event.target.error.message);
     };
 
-    request.onblocked = function(event) {
+    request.onblocked = function (event) {
       console.warn('Database is blocked (probably open in another tab)');
-      reject('Database is blocked. Please close other tabs using this database.');
+      reject(
+        'Database is blocked. Please close other tabs using this database.'
+      );
     };
   });
 };
 
-IDBCache.prototype.getUsage = function() {
+IDBCache.prototype.getUsage = function () {
   return new Promise((resolve, reject) => {
+    console.log(9888, navigator.storage);
     if (!navigator.storage || !navigator.storage.estimate) {
       return reject(new Error('Storage Estimation API not available'));
     }
-    
-    navigator.storage.estimate()
-      .then(estimate => {
+    navigator.storage
+      .estimate()
+      .then((estimate) => {
         resolve({
           usage: estimate.usage,
           quota: estimate.quota,
-          percentage: (estimate.usage / estimate.quota * 100).toFixed(2) + '%'
+          percentage:
+            ((estimate.usage / estimate.quota) * 100).toFixed(2) + '%',
         });
       })
       .catch(reject);
@@ -239,10 +242,14 @@ IDBCache.prototype._storableToResponse = function (data) {
 
 var CACHE_NAME = 'app-cache-v1';
 var idbCache = new IDBCache(CACHE_NAME);
-idbCache.getUsage()
-  .then(usage => console.log('Storage usage:', usage))
+idbCache
+  .getUsage()
+  .then((usage) => {
+    console.log('Storage usage:', usage);
+  })
   .catch(console.error);
 
+const vData = {};
 class MultiVideoPlayer {
   constructor() {
     this.videoElement = document.getElementById('videoPlayer');
@@ -347,18 +354,27 @@ class MultiVideoPlayer {
       //   console.error('缓存访问失败:', error);
       //   resolve(null);
       // }
-      idbCache.match(videoUrl).then(function (cachedResponse) {
-        // 如果缓存中有且未过期，直接返回
-        if (cachedResponse) {
-          cachedResponse.blob().then((blob) => {
-            const blobUrl = URL.createObjectURL(blob);
-            console.log(991199, blobUrl);
-            resolve(blobUrl);
-          });
-        } else {
-          resolve(null);
-        }
-      });
+      if (vData[videoUrl]) {
+        vData[videoUrl].blob().then((blob) => {
+          const blobUrl = URL.createObjectURL(blob);
+          console.log(7799, blobUrl);
+          resolve(blobUrl);
+        });
+      } else {
+        resolve(null);
+      }
+      // idbCache.match(videoUrl).then(function (cachedResponse) {
+      //   // 如果缓存中有且未过期，直接返回
+      //   if (cachedResponse) {
+      //     cachedResponse.blob().then((blob) => {
+      //       const blobUrl = URL.createObjectURL(blob);
+      //       console.log(991199, blobUrl);
+      //       resolve(blobUrl);
+      //     });
+      //   } else {
+      //     resolve(null);
+      //   }
+      // });
     });
   }
 
@@ -391,9 +407,10 @@ class MultiVideoPlayer {
           console.log(22245, response.ok);
           const clonedResponse = response.clone();
           if (response.ok) {
-            idbCache.put(segment.url, clonedResponse).catch(function (err) {
-              console.error('缓存失败:', err);
-            });
+            // idbCache.put(segment.url, clonedResponse).catch(function (err) {
+            //   console.error('缓存失败:', err);
+            // });
+            vData[segment.url] = clonedResponse;
             // if ('caches' in window) {
             //   caches.open('video-cache').then((cache) => {
             //     cache.put(segment.url, clonedResponse).catch((error) => {
