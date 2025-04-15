@@ -16,6 +16,7 @@ if (!isBlobUrlSupported()) {
   console.log('支持');
 }
 const vData = {};
+
 class MultiVideoPlayer {
   constructor() {
     this.videoElement = document.getElementById('videoPlayer');
@@ -31,11 +32,11 @@ class MultiVideoPlayer {
         url: 'https://assets.springserve.com/video_creatives/000/534/305/1241179_1280x720-4482558.mp4',
         preload: true,
       },
-      {
-        id: 'part3',
-        url: 'https://assets.springserve.com/video_creatives/000/723/173/WOOLRICH-5809681.mp4',
-        preload: true,
-      },
+      // {
+      //   id: 'part3',
+      //   url: 'https://assets.springserve.com/video_creatives/000/723/173/WOOLRICH-5809681.mp4',
+      //   preload: true,
+      // },
     ];
     this.currentSegmentIndex = 0;
     this.isPlaying = false;
@@ -80,17 +81,35 @@ class MultiVideoPlayer {
     this.prefetchNextSegments();
   }
 
+  playWithMediaSource(blob) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      console.log(833);
+      this.videoElement.src = reader.result;
+      this.videoElement.play();
+    };
+    reader.onerror = ()=>{
+      console.log('异常')
+    };
+    reader.readAsDataURL(blob);
+  }
+
   playCurrentSegment() {
     const segment = this.videoSegments[this.currentSegmentIndex];
 
     try {
       // 尝试从Service Worker缓存获取
       this.getCachedVideoUrl(segment.url).then((cachedUrl) => {
-        this.videoElement.src = cachedUrl || segment.url;
-        console.log(99999911, this.isPlaying);
-        // 如果用户之前已经在播放，继续播放
-        if (this.isPlaying) {
-          this.videoElement.play();
+        // this.videoElement.src = cachedUrl || segment.url;
+        console.log(1, this.isPlaying);
+        if (cachedUrl) {
+          this.playWithMediaSource(cachedUrl);
+        } else {
+          this.videoElement.src = segment.url;
+          // 如果用户之前已经在播放，继续播放
+          if (this.isPlaying) {
+            this.videoElement.play();
+          }
         }
       });
     } catch (error) {
@@ -122,9 +141,9 @@ class MultiVideoPlayer {
       // }
       if (vData[videoUrl]) {
         vData[videoUrl].blob().then((blob) => {
-          const blobUrl = URL.createObjectURL(blob);
+          // const blobUrl = URL.createObjectURL(blob);
           console.log(7799, blob);
-          resolve(blobUrl);
+          resolve(blob);
         });
       } else {
         resolve(null);
@@ -177,7 +196,7 @@ class MultiVideoPlayer {
             //   console.error('缓存失败:', err);
             // });
             vData[segment.url] = clonedResponse;
-            console.log(2673, vData)
+            console.log(2673, vData);
             // if ('caches' in window) {
             //   caches.open('video-cache').then((cache) => {
             //     cache.put(segment.url, clonedResponse).catch((error) => {
