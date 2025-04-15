@@ -71,6 +71,24 @@ IDBCache.prototype.open = function () {
   });
 };
 
+IDBCache.prototype.getUsage = function() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.storage || !navigator.storage.estimate) {
+      return reject(new Error('Storage Estimation API not available'));
+    }
+    
+    navigator.storage.estimate()
+      .then(estimate => {
+        resolve({
+          usage: estimate.usage,
+          quota: estimate.quota,
+          percentage: (estimate.usage / estimate.quota * 100).toFixed(2) + '%'
+        });
+      })
+      .catch(reject);
+  });
+};
+
 // 存储响应
 IDBCache.prototype.put = function (url, response) {
   var self = this;
@@ -221,6 +239,9 @@ IDBCache.prototype._storableToResponse = function (data) {
 
 var CACHE_NAME = 'app-cache-v1';
 var idbCache = new IDBCache(CACHE_NAME);
+idbCache.getUsage()
+  .then(usage => console.log('Storage usage:', usage))
+  .catch(console.error);
 
 class MultiVideoPlayer {
   constructor() {
