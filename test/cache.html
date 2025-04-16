@@ -69,7 +69,7 @@
         response.blob().then((blob) => {
           const blobUrl = URL.createObjectURL(blob);
           videoElement.src = blobUrl;
-          videoElement.play().catch(e => console.error("Play error:", e));
+  
         })
       })
 
@@ -77,6 +77,10 @@
     // 使用
     const video = document.querySelector("#videoPlayer");
     playNormalMp4(video, "https://liujiacai0518.github.io/test/movie.mp4");
+    document.addEventListener('keydown', (event) => {
+      console.log(1111, event.keyCode);
+      event.keyCode === 13 && videoElement.play()
+    });
   </script>
 </body>
 
