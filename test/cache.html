@@ -73,16 +73,30 @@
   <!-- <script src="/test/app.js?v=3"></script> -->
   <script>
     var player = videojs('my-player');
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
 
     function playNormalMp4(videoElement, mp4Url) {
       fetch(mp4Url).then((response) => {
         if (!response.ok) throw new Error("Failed to fetch MP4");
         response.blob().then((blob) => {
-          const blobUrl = URL.createObjectURL(blob);
-          // videoElement.src = blobUrl;
-          player.src({
-            type: 'video/mp4',
-            src: blobUrl
+          // const blobUrl = URL.createObjectURL(blob);
+          // // videoElement.src = blobUrl;
+          // player.src({
+          //   type: 'video/mp4',
+          //   src: blobUrl
+          // });
+          blobToBase64(blob).then(base64 => {
+            player.src({
+              type: 'video/mp4',
+              src: base64  // 格式如: data:video/mp4;base64,AAAA...
+            });
           });
         })
       })
