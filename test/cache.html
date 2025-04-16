@@ -1,58 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>离线视频播放器</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        video {
-            width: 100%;
-            background: #000;
-        }
-        .controls {
-            margin: 20px 0;
-        }
-        button {
-            padding: 8px 16px;
-            margin-right: 10px;
-        }
-        .status {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        .online {
-            background: #d4edda;
-            color: #155724;
-        }
-        .offline {
-            background: #f8d7da;
-            color: #721c24;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>离线视频播放器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    video {
+      width: 100%;
+      background: #000;
+    }
+
+    .controls {
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 8px 16px;
+      margin-right: 10px;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .online {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .offline {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>离线视频播放器</h1>
-    
-    <div class="controls">
-        <button id="cacheBtn">缓存视频</button>
-        <button id="playBtn">播放视频</button>
-        <button id="clearBtn">清除缓存</button>
-    </div>
-    
-    <div id="status" class="status"></div>
-    
-    <video id="videoPlayer" controls>
-        <!-- <source src="https://liujiacai0518.github.io/test/movie.mp4" type="video/mp4"> -->
-        您的浏览器不支持HTML5视频
-    </video>
-    
-    <script src="/test/app.js?v=3"></script>
+  <h1>离线视频播放器</h1>
+
+  <div class="controls">
+    <button id="cacheBtn">缓存视频</button>
+    <button id="playBtn">播放视频</button>
+    <button id="clearBtn">清除缓存</button>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <video id="videoPlayer" controls>
+    <!-- <source src="https://liujiacai0518.github.io/test/movie.mp4" type="video/mp4"> -->
+    您的浏览器不支持HTML5视频
+  </video>
+
+  <!-- <script src="/test/app.js?v=3"></script> -->
+  <script>
+    function playNormalMp4(videoElement, mp4Url) {
+      fetch(mp4Url).then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch MP4");
+        response.blob().then((blob) => {
+          const blobUrl = URL.createObjectURL(blob);
+          videoElement.src = blobUrl;
+          videoElement.play().catch(e => console.error("Play error:", e));
+        })
+      })
+
+    }
+    // 使用
+    const video = document.querySelector("#videoPlayer");
+    playNormalMp4(video, "https://liujiacai0518.github.io/test/movie.mp4");
+  </script>
 </body>
+
 </html>
